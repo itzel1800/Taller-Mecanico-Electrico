@@ -379,9 +379,11 @@ class MenuTallerApp:
         self.id_entry.grid(row=0, column=1, sticky="ew", padx=6, pady=5)
 
         # Generar campos de entrada dinámicamente distribuidos en 2 columnas
+        max_fila = 0
         for indice, (campo, etiqueta, obligatorio) in enumerate(config["campos"], start=1):
             fila = (indice // 2) + 1
             columna = (indice % 2) * 2
+            max_fila = max(max_fila, fila)
             
             tk.Label(marco_form, text=etiqueta + (" *" if obligatorio else ""), bg=BLANCO,
                      fg=TEXTO).grid(row=fila, column=columna, sticky="w", padx=6, pady=5)
@@ -393,11 +395,11 @@ class MenuTallerApp:
         for col in range(4):
             marco_form.columnconfigure(col, weight=1 if col % 2 else 0)
 
-        # Botón para Guardar (Sirve tanto para NUEVO como para EDITAR)
-        ultima_fila = ((len(config["campos"]) + 1) // 2) + 1
+        # Botón para Guardar (Sirve tanto para NUEVO como para EDITAR) - Ubicado de forma segura en la siguiente fila
+        ultima_fila = max_fila + 1
         tk.Button(marco_form, text="Guardar registro", command=self.guardar_registro, bg=VERDE,
                   fg=AZUL_OSCURO, relief="flat", cursor="hand2", padx=14, pady=8,
-                  font=("Segoe UI", 9, "bold")).grid(row=ultima_fila, column=0, columnspan=4, sticky="w", padx=6, pady=8)
+                  font=("Segoe UI", 9, "bold")).grid(row=ultima_fila, column=0, columnspan=4, sticky="w", padx=6, pady=(12, 8))
 
         # Tabla visual (Treeview) para mostrar registros
         marco_tabla = tk.Frame(self.panel, bg=VERDE_CLARO)
@@ -573,4 +575,3 @@ if __name__ == "__main__":
     app = MenuTallerApp(ventana)
     ventana.protocol("WM_DELETE_WINDOW", app.salir)
     ventana.mainloop()
-    #
